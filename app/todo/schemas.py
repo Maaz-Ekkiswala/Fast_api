@@ -1,16 +1,8 @@
-from typing import Union
+from typing import Union, List
 
 from pydantic import BaseModel
 
 from app.todo.constants import TodoStatus
-
-
-class TodoSchema(BaseModel):
-    id: int
-    title: str
-
-    class Config:
-        orm_mode = True
 
 
 class TodoSchemaCreate(BaseModel):
@@ -36,6 +28,34 @@ class TodoItemsSchema(BaseModel):
     title: str
     status: TodoStatus
     description: Union[str, None] = None
+
+    class Config:
+        orm_mode = True
+
+
+class TodoSchema(BaseModel):
+    id: int
+    title: str
+    todo_items: List[TodoItemsSchema]
+
+    class Config:
+        orm_mode = True
+
+
+class TodoSchemaById(BaseModel):
+    id: int
+    title: str
+
+    class Config:
+        orm_mode = True
+
+
+class TodoItemsSchemaById(BaseModel):
+    id: int
+    title: str
+    status: TodoStatus
+    description: Union[str, None] = None
+    todo: TodoSchemaById
 
     class Config:
         orm_mode = True

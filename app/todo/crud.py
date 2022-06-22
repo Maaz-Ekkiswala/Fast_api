@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from .models import ToDo, TODoItems
+from .models import ToDo, ToDoItems
 from .schemas import TodoSchema, TodoItemsSchema
 
 
@@ -14,7 +14,7 @@ def create_todo(db: Session, todo):
 
 
 def create_todo_items(db: Session, todo_items):
-    db_work = TODoItems(todo_id=todo_items.todo_id, description=todo_items.description, title=todo_items.title,
+    db_work = ToDoItems(todo_id=todo_items.todo_id, description=todo_items.description, title=todo_items.title,
                         status=todo_items.status)
     db.add(db_work)
     db.commit()
@@ -31,7 +31,7 @@ def get_todo_id(db: Session, id):
 
 
 def get_todo_items(db: Session):
-    return db.query(TODoItems).all()
+    return db.query(ToDoItems).all()
 
 
 def update_todo(db: Session, todo, id):
@@ -47,16 +47,16 @@ def delete_todo(db: Session, id):
 
 
 def get_todo_items_id(db: Session, id):
-    return db.query(TODoItems).filter(TODoItems.id == id).first()
+    return db.query(ToDoItems).filter(ToDoItems.id == id).first()
 
 
 def update_todo_items(db: Session, todo_items, id):
-    db_update = db.query(TODoItems).filter(TODoItems.id == id).update(todo_items.dict())
+    db_update = db.query(ToDoItems).filter(ToDoItems.id == id).update(todo_items.dict())
     db.commit()
     return db_update
 
 
 def delete_todo_items(db: Session, id):
-    db_delete = db.query(TODoItems).filter(TODoItems.id == id).delete()
+    db_delete = db.query(ToDoItems).filter(ToDoItems.id == id).delete()
     db.commit()
     return db_delete

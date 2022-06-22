@@ -1,18 +1,15 @@
-from typing import List
+from typing import List, Union
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.todo import schemas, crud
+from app.todo.constants import TodoStatus
+from app.todo.models import ToDoItems
 from app.todo.schemas import TodoSchema, TodoItemsSchema
 from db.depandency import get_db
 
 router = APIRouter()
-
-
-@router.get("/")
-def get_todo():
-    return "todo app created!"
 
 
 @router.post("/todo/", response_model=schemas.TodoSchema)
@@ -50,8 +47,10 @@ def update_todo(todo_update: schemas.TodoSchemaCreate, id: int, db_update: Sessi
 
 
 @router.get("/todo/{id}", response_model=schemas.TodoSchema)
-def read_todo_id(id: int, db: Session = Depends(get_db)):
+def read_todo_id(id: int, status: Union[int, None] = Query(default=None), db: Session = Depends(get_db)):
     items_id = crud.get_todo_id(db, id=id)
+    if status == 0 and not status:
+        items_id.todo_items = db.query(ToDoItems).filter(ToDoItems.status == TodoStatus(status).name).all()
     return items_id
 
 
@@ -61,12 +60,15 @@ def delete_todo(id: int, db: Session = Depends(get_db)):
     return {"msg": "data Deleted Successfully"}
 
 
-@router.get("/todo_items/{id}", response_model=schemas.TodoItemsSchema)
+@router.get("/todo_items/{id}", response_model=schemas.TodoItemsSchemaById)
 def read_todo_items_id(id: int, db: Session = Depends(get_db)):
     desc_id = crud.get_todo_items_id(db, id=id)
+    # if status == 0 and not status:
+    #     desc_id.todo_items = db.query(ToDoItems).filter(ToDoItems.status == TodoStatus(status).name).all()
     if desc_id is None:
         raise HTTPException(status_code=404, detail="User not found")
     return desc_id
+
 
 
 @router.put("/todo_items/{id}", response_model=schemas.TodoItemsSchema)
@@ -80,4 +82,3 @@ def update_todo_items(todo_items_update: schemas.TodoItemsSchemaCreate, id: int,
 def delete_todo_items(id: int, db: Session = Depends(get_db)):
     crud.delete_todo_items(db, id=id)
     return {"msg": "data Deleted Successfully"}
-
