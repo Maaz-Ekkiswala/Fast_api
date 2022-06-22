@@ -49,9 +49,10 @@ def update_todo(todo_update: schemas.TodoSchemaCreate, id: int, db_update: Sessi
 @router.get("/todo/{id}", response_model=schemas.TodoSchema)
 def read_todo_id(id: int, status: Union[int, None] = Query(default=None), db: Session = Depends(get_db)):
     items_id = crud.get_todo_id(db, id=id)
-    if status == 0 and not status:
-        items_id.todo_items = db.query(ToDoItems).filter(ToDoItems.status == TodoStatus(status).name,
-                                                         ToDoItems.todo_id == id).all
+    todo_items = db.query(ToDoItems).filter(ToDoItems.todo_id == id)
+    if status:
+        todo_items = todo_items.filter(ToDoItems.status == TodoStatus(status).name)
+    items_id.todo_items = todo_items.all()
     return items_id
 
 
