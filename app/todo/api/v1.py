@@ -50,7 +50,8 @@ def update_todo(todo_update: schemas.TodoSchemaCreate, id: int, db_update: Sessi
 def read_todo_id(id: int, status: Union[int, None] = Query(default=None), db: Session = Depends(get_db)):
     items_id = crud.get_todo_id(db, id=id)
     if status == 0 and not status:
-        items_id.todo_items = db.query(ToDoItems).filter(ToDoItems.status == TodoStatus(status).name).all()
+        items_id.todo_items = db.query(ToDoItems).filter(ToDoItems.status == TodoStatus(status).name,
+                                                         ToDoItems.todo_id == id).all
     return items_id
 
 
@@ -68,7 +69,6 @@ def read_todo_items_id(id: int, db: Session = Depends(get_db)):
     if desc_id is None:
         raise HTTPException(status_code=404, detail="User not found")
     return desc_id
-
 
 
 @router.put("/todo_items/{id}", response_model=schemas.TodoItemsSchema)
