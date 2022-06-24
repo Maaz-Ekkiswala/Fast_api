@@ -3,10 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.todo import models
 from app.todo.api.v1 import router
+
 from core.config import settings
 from db.database import engine
 
 models.Base.metadata.create_all(bind=engine)
+
 
 def get_application():
     _app = FastAPI(title=settings.PROJECT_NAME)
@@ -22,9 +24,6 @@ def get_application():
     return _app
 
 
-
-
 app = get_application()
-
 
 app.include_router(router, prefix="/api/v1")
