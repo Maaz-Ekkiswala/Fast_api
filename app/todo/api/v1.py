@@ -81,65 +81,80 @@ def read_todo(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
 
 @router.get("/todo_items/", response_model=List[TodoItemsSchema])
 def read_todo(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
-    items_desc = crud.get_todo_items(db)
-    Authorize.jwt_required()
-    return items_desc
-
+    try:
+        items_desc = crud.get_todo_items(db)
+        Authorize.jwt_required()
+        return items_desc
+    except:
+        raise HTTPException(status_code=404, detail="Please Signup or login First")
 
 @router.put("/todo/{id}/", response_model=TodoSchema)
 def update_todo(todo_update: schemas.TodoSchemaCreate, id: int, db_update: Session = Depends(get_db),
                 Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
-    crud.update_todo(db=db_update, todo=todo_update, id=id)
-    return crud.get_todo_id(db=db_update, id=id)
-
+    try:
+        Authorize.jwt_required()
+        crud.update_todo(db=db_update, todo=todo_update, id=id)
+        return crud.get_todo_id(db=db_update, id=id)
+    except:
+        raise HTTPException(status_code=404, detail="Please Signup or login First")
 
 @router.get("/todo/{id}/", response_model=TodoSchema)
 def read_todo_id(id: int, status: Union[int, None] = Query(default=None), db: Session = Depends(get_db),
                  Authorize: AuthJWT = Depends()):
-    items_id = crud.get_todo_id(db, id=id)
-    Authorize.jwt_required()
-    todo_items = db.query(ToDoItems).filter(ToDoItems.todo_id == id)
-    if status:
-        todo_items = todo_items.filter(ToDoItems.status == TodoStatus(status).name)
-    items_id.todo_items = todo_items.all()
-    return items_id
-
+    try:
+        items_id = crud.get_todo_id(db, id=id)
+        Authorize.jwt_required()
+        todo_items = db.query(ToDoItems).filter(ToDoItems.todo_id == id)
+        if status:
+            todo_items = todo_items.filter(ToDoItems.status == TodoStatus(status).name)
+        items_id.todo_items = todo_items.all()
+        return items_id
+    except:
+        raise HTTPException(status_code=404, detail="Please Signup or login First")
 
 @router.delete("/todo/{id}/")
 def delete_todo(id: int, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
-    crud.delete_todo(db, id=id)
-    return {"msg": "data Deleted Successfully"}
-
+    try:
+        Authorize.jwt_required()
+        crud.delete_todo(db, id=id)
+        return {"msg": "data Deleted Successfully"}
+    except:
+        raise HTTPException(status_code=404, detail="Please Signup or login First")
 
 @router.get("/todo_items/{id}/", response_model=TodoItemsSchemaById)
 def read_todo_items_id(id: int, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
-    desc_id = crud.get_todo_items_id(db, id=id)
-    # if status == 0 and not status:
-    #     desc_id.todo_items = db.query(ToDoItems).filter(ToDoItems.status == TodoStatus(status).name).all()
-    if desc_id is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return desc_id
-
+    try:
+        Authorize.jwt_required()
+        desc_id = crud.get_todo_items_id(db, id=id)
+        # if status == 0 and not status:
+        #     desc_id.todo_items = db.query(ToDoItems).filter(ToDoItems.status == TodoStatus(status).name).all()
+        if desc_id is None:
+            raise HTTPException(status_code=404, detail="User not found")
+        return desc_id
+    except:
+        raise HTTPException(status_code=404, detail="Please Signup or login First")
 
 @router.put("/todo_items/{id}/", response_model=TodoItemsSchema)
 def update_todo_items(todo_items_update: schemas.TodoItemsSchemaCreate, id: int, db_update: Session = Depends(get_db),
                       Authorize: AuthJWT = Depends()):
-    print(todo_items_update)
-    Authorize.jwt_required()
-    crud.update_todo_items(db=db_update, todo_items=todo_items_update, id=id)
-    return crud.get_todo_items_id(db=db_update, id=id)
-
+    try:
+        print(todo_items_update)
+        Authorize.jwt_required()
+        crud.update_todo_items(db=db_update, todo_items=todo_items_update, id=id)
+        return crud.get_todo_items_id(db=db_update, id=id)
+    except:
+        raise HTTPException(status_code=404, detail="Please Signup or login First")
 
 @router.delete("/todo_items/{id}/")
 def delete_todo_items(id: int, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
-    desc_id = crud.get_todo_items_id(db, id=id)
-    Authorize.jwt_required()
-    print(desc_id)
-    if not desc_id:
-        raise HTTPException(status_code=404, detail="Data not found")
-    crud.delete_todo_items(db, id=id)
+    try:
+        desc_id = crud.get_todo_items_id(db, id=id)
+        Authorize.jwt_required()
+        print(desc_id)
+        if not desc_id:
+            raise HTTPException(status_code=404, detail="Data not found")
+        crud.delete_todo_items(db, id=id)
 
-    return {"msg": "data Deleted Successfully"}
+        return {"msg": "data Deleted Successfully"}
+    except:
+        raise HTTPException(status_code=404, detail="Please Signup or login First")
