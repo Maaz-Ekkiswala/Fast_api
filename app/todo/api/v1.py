@@ -1,9 +1,7 @@
 from typing import List, Union
-from uuid import uuid4
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi_jwt_auth import AuthJWT
-from fastapi_jwt_auth.exceptions import AuthJWTException
 from sqlalchemy.orm import Session
 from starlette import status
 
@@ -35,7 +33,7 @@ async def create_user(data: UserAuth, db_user: Session = Depends(get_db)):
 async def login(login_u: schemas.Login, Authorize: AuthJWT = Depends(), db_user: Session = Depends(get_db)):
     user = db_user.query(User).filter(User.username == login_u.username).first()
     access_token = Authorize.create_access_token(subject=user.username, fresh=True)
-    refresh_token = Authorize.create_refresh_token(subject=user.username)
+
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -49,7 +47,6 @@ async def login(login_u: schemas.Login, Authorize: AuthJWT = Depends(), db_user:
         )
     return {
         "access_token": access_token,
-        "refresh_token": refresh_token,
     }
 
 
@@ -72,11 +69,14 @@ def create_items_for_work(
 
 @router.get("/todo/", response_model=List[TodoSchemaById])
 def read_todo(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
-    items = crud.get_todo(db)
-    Authorize.jwt_required()
-    if db is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return items
+    try:
+        items = crud.get_todo(db)
+        Authorize.jwt_required()
+        if db is None:
+            raise HTTPException(status_code=404, detail="User not found")
+        return items
+    except:
+        raise HTTPException(status_code=404, detail="Please Signup or login First")
 
 
 @router.get("/todo_items/", response_model=List[TodoItemsSchema])
