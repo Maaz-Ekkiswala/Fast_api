@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi_jwt_auth import AuthJWT
 
 from app.todo import models
 from app.todo.api.v1 import router
@@ -8,6 +9,10 @@ from core.config import settings
 from db.database import engine
 
 models.Base.metadata.create_all(bind=engine)
+
+@AuthJWT.load_config
+def get_config():
+    return settings
 
 
 def get_application():
@@ -27,3 +32,4 @@ def get_application():
 app = get_application()
 
 app.include_router(router, prefix="/api/v1")
+

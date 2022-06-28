@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 from pydantic import AnyHttpUrl, BaseSettings, PostgresDsn, validator
 
@@ -6,6 +6,12 @@ from pydantic import AnyHttpUrl, BaseSettings, PostgresDsn, validator
 class Settings(BaseSettings):
     PROJECT_NAME: str
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
+    SECRET_KEY: str
+    ALGORITHM: str
+    JWT_SECRET_KEY: str
+    JWT_REFRESH_SECRET_KEY: str
+    AUTHJWT_SECRET_KEY: str
+
 
     # @validator("BACKEND_CORS_ORIGINS", pre=True)
     # def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:

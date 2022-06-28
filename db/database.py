@@ -1,7 +1,5 @@
-from datetime import datetime
+from sqlalchemy import create_engine
 
-from sqlalchemy import create_engine, Column, Integer, TIMESTAMP, func
-from sqlalchemy.ext.declarative import as_declarative, declared_attr
 from sqlalchemy.orm import sessionmaker
 
 from core.config import settings

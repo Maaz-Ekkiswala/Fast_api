@@ -23,3 +23,12 @@ class ToDoItems(Base):
     status = Column(Enum(TodoStatus))
 
     todo = relationship("ToDo", back_populates="todo_items")
+
+
+class User(Base):
+    __tablename__ = 'user'
+
+    username = Column(String, nullable=False)
+    phone = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+    password = Column(String, nullable=True)
