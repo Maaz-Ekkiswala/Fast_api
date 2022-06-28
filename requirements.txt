@@ -24,3 +24,4 @@ zipp==3.8.0
 
 passlib~=1.7.4
 python-jose[cryptography]
+fastapi_jwt_auth==0.5.0
