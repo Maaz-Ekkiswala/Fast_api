@@ -59,3 +59,46 @@ class TodoItemsSchemaById(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class UserAuth(BaseModel):
+    username: str
+    email: str
+    phone: Union[str, None] = None
+    password: str
+
+    class Config:
+        orm_mode = True
+
+
+class UserInDB(UserAuth):
+    hashed_password: str
+
+
+class UserOut(BaseModel):
+    username: str
+    email: str
+    phone: int
+
+    class Config:
+        orm_mode = True
+
+
+class TokenSchema(BaseModel):
+    access_token: str
+    # token_type: str
+
+    class Config:
+        orm_mode = True
+
+
+class TokenData(BaseModel):
+    username: Union[str, None] = None
+
+
+class Login(BaseModel):
+    username: str
+    password: str
+
+    class Config:
+        orm_mode = True
