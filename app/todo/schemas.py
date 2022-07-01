@@ -1,8 +1,9 @@
-from typing import Union, List
+from typing import Union, List, Optional
 
 from pydantic import BaseModel
 
 from app.todo.constants import TodoStatus
+from app.user.schemas import UserForTodo
 
 
 class TodoSchemaCreate(BaseModel):
@@ -16,7 +17,7 @@ class TodoItemsSchemaCreate(BaseModel):
     todo_id: int
     title: str
     status: TodoStatus
-    description: Union[str, None] = None
+    description: Union[str, None]
 
     class Config:
         orm_mode = True
@@ -27,13 +28,14 @@ class TodoItemsSchema(BaseModel):
     todo_id: int
     title: str
     status: TodoStatus
-    description: Union[str, None] = None
+    description: Union[str, None]
 
     class Config:
         orm_mode = True
 
 
 class TodoSchema(BaseModel):
+
     id: int
     title: str
     todo_items: List[TodoItemsSchema]
@@ -43,6 +45,7 @@ class TodoSchema(BaseModel):
 
 
 class TodoSchemaById(BaseModel):
+    user_id: Optional[str]
     id: int
     title: str
 
@@ -54,51 +57,10 @@ class TodoItemsSchemaById(BaseModel):
     id: int
     title: str
     status: TodoStatus
-    description: Union[str, None] = None
+    description: Union[str, None]
     todo: TodoSchemaById
 
     class Config:
         orm_mode = True
 
 
-class UserAuth(BaseModel):
-    username: str
-    email: str
-    phone: Union[str, None] = None
-    password: str
-
-    class Config:
-        orm_mode = True
-
-
-class UserInDB(UserAuth):
-    hashed_password: str
-
-
-class UserOut(BaseModel):
-    username: str
-    email: str
-    phone: int
-
-    class Config:
-        orm_mode = True
-
-
-class TokenSchema(BaseModel):
-    access_token: str
-    # token_type: str
-
-    class Config:
-        orm_mode = True
-
-
-class TokenData(BaseModel):
-    username: Union[str, None] = None
-
-
-class Login(BaseModel):
-    username: str
-    password: str
-
-    class Config:
-        orm_mode = True

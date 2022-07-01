@@ -17,4 +17,8 @@ services:
       - .env
     ports:
       - "5433:5432"
+#    environment:
+#      - 'POSTGRES_DB:tododb'
+#      - 'POSTGRES_USER:todo_user'
+#      - 'POSTGRES_PASSWORD:todo_pass'
 

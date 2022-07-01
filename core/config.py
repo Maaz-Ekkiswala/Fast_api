@@ -11,7 +11,9 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY: str
     JWT_REFRESH_SECRET_KEY: str
     AUTHJWT_SECRET_KEY: str
-
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
+    AUTHJWT_DENYLIST_ENABLED: bool = True
+    AUTHJWT_DENYLIST_TOKEN_CHECKS: set = {"access", "refresh"}
 
     # @validator("BACKEND_CORS_ORIGINS", pre=True)
     # def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
