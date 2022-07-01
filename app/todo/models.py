@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, Text, Boolean, String, ForeignKey, Enum
+from sqlalchemy import Integer, Text, String, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import Column
 
@@ -9,9 +9,11 @@ from db.base import Base
 class ToDo(Base):
     __tablename__ = 'todo'
 
+    user_id = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"))
     title = Column(String, nullable=False)
 
     todo_items = relationship("ToDoItems", back_populates="todo")
+    user_todo = relationship("User", back_populates="user_for_todo")
 
 
 class ToDoItems(Base):
@@ -25,10 +27,3 @@ class ToDoItems(Base):
     todo = relationship("ToDo", back_populates="todo_items")
 
 
-class User(Base):
-    __tablename__ = 'user'
-
-    username = Column(String, nullable=False)
-    phone = Column(String, nullable=False)
-    email = Column(String, nullable=False)
-    password = Column(String, nullable=True)
