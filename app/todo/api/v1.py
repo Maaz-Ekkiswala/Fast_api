@@ -14,17 +14,19 @@ router = APIRouter(tags=["todo"])
 
 
 def authorize_todo(authorize: AuthJWT = Depends()):
-    try:
-        authorize.jwt_required()
-    except:
-        raise HTTPException(status_code=404, detail="Please Signup or login First")
-    user_id = authorize.get_jwt_subject()
+    # try:
+    #     authorize.jwt_required()
+    # except:
+    #     raise HTTPException(status_code=404, detail="Please Signup or login First")
+    # user_id = authorize.get_jwt_subject()
+    user_id = 1
     return user_id
 
 
 @router.get("/todo/", response_model=List[TodoSchemaById])
 def read_todo(db: Session = Depends(get_db), user=Depends(authorize_todo)):
     todo = crud.get_todo(db, user)
+    print(user)
     return todo
 
 

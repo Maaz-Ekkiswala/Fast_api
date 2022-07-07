@@ -74,3 +74,9 @@ def access_revoke(authorize: AuthJWT = Depends()):
     print(authorize.get_raw_jwt())
     denylist.add(jti)
     return {"detail": "Access token has been revoke"}
+
+
+# @user_router.delete('/')
+# def access_revoke(authorize: AuthJWT = Depends(),db: Session = Depends(get_db)):
+#
+#     users = db
