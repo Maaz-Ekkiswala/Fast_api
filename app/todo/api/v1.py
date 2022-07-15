@@ -14,12 +14,12 @@ router = APIRouter(tags=["todo"])
 
 
 def authorize_todo(authorize: AuthJWT = Depends()):
-    # try:
-    #     authorize.jwt_required()
-    # except:
-    #     raise HTTPException(status_code=404, detail="Please Signup or login First")
-    # user_id = authorize.get_jwt_subject()
-    user_id = 1
+    try:
+        authorize.jwt_required()
+    except:
+        raise HTTPException(status_code=404, detail="Please Signup or login First")
+    user_id = authorize.get_jwt_subject()
+
     return user_id
 
 
@@ -122,3 +122,4 @@ def delete_todo_items(id: int, db: Session = Depends(get_db), user=Depends(autho
         raise HTTPException(status_code=404, detail="Data not found")
     crud.delete_todo_items(db, user, id=id)
     return {"msg": "data Deleted Successfully"}
+

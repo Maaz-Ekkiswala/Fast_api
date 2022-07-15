@@ -24,7 +24,7 @@ class UserOut(BaseModel):
     id: str
     username: str
     email: str
-    phone: int
+    phone: str
 
     class Config:
         orm_mode = True
